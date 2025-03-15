@@ -9,8 +9,8 @@ annotator_ckpts_path='../ckpt/Annotators'
 checkpoint_path="./ckpt/checkpoint-090000"
 
 # dataset config
-height=512 # 432# 288
-width=512 # 768 # 512
+height=512 
+width=512
 stride=24 # clip length
 
 #training config

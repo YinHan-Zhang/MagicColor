@@ -18,17 +18,25 @@ Given a set of references and corresponding line art image, our approach enables
 
 ## Set up
 
+### Environment
+
+    conda create -n MagicColor python=3.10  
+
+    pip install -r requirements.txt
+
 ### Repository
 
     git clone https://github.com/YinHan-Zhang/MagicColor.git
     
     cd MagicColor
 
-### Environment
+Use GSA to automatically extract masks:
 
-    conda create -n MagicColor python=3.10  
+    git clone https://github.com/IDEA-Research/Grounded-Segment-Anything.git
 
-    pip install -r requirements.txt
+Install Grounded-Segment-Anything see here -> [install guideline](https://github.com/IDEA-Research/Grounded-Segment-Anything)
+
+    mv automatic_label.py Grounded-Segment-Anything/
 
 ### Download pretrain weight
 

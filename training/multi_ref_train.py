@@ -174,7 +174,6 @@ def log_validation(
                 
             gen_img = torch.cat(images_tensor, 1)
             gen_img_np = cv2.cvtColor(gen_img.cpu().numpy(), cv2.COLOR_RGB2BGR)
-            # 保存拼接后的图像
             image_save_path = os.path.join(save_path, f'output_{index}.png')
             cv2.imwrite(
                 image_save_path, gen_img_np
@@ -254,8 +253,8 @@ class Net(nn.Module):
                     return_dict=True,
                 ).output
                 up_ft_index = 1
-                ref_ft = ref_ft_all['up_ft'][up_ft_index] # ensem, c, h, w
-                ref_ft = ref_ft.mean(0, keepdim=True) # 1,c,h,w
+                ref_ft = ref_ft_all['up_ft'][up_ft_index] 
+                ref_ft = ref_ft.mean(0, keepdim=True)
                 
                
                 self.reference_control_reader.update(self.reference_control_writer)
