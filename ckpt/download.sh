@@ -8,3 +8,8 @@ echo "download clip success!"
 
 huggingface-cli download --resume-download openai/clip-vit-large-patch14 --local-dir ./clip-vit-large-patch14
 echo "download clip success!"
+
+huggingface-cli download --resume-download stable-diffusion-v1-5/stable-diffusion-v1-5 --local-dir ./stable-diffusion-v1-5
+echo "download stable-diffusion-v1-5 success!"
+
+# download Dinov2

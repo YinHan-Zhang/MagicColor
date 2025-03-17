@@ -132,7 +132,7 @@ def initialize_pipeline(args):
     preprocessor.to(device, dtype)
 
     vae = AutoencoderKL.from_pretrained(
-        "/hpc2hdd/home/yzhang472/work/Moore-AnimateAnyone/pretrained_weights/sd-vae-ft-mse",
+        "../ckpt/sd-vae-ft-mse",
         use_safetensors=False
     )
     scheduler = DDIMScheduler.from_pretrained(args.pretrained_model_name_or_path, subfolder='scheduler', use_safetensors=False)
@@ -182,10 +182,8 @@ def initialize_pipeline(args):
     controlnet_text_encoder = CLIPTextModel.from_pretrained(args.controlnet_clip_vision_encoder_path, use_safetensors=False)
     controlnet_image_enc = CLIPVisionModelWithProjection.from_pretrained(args.controlnet_clip_vision_encoder_path, use_safetensors=False)
     
-    # 初始化 DINO 编码器
     dino_encoder = FrozenDinoV2Encoder().to(device, dtype)
     
-    # 创建管道
     pipe = ImagePairEditPipeline(
         reference_unet=reference_unet,
         controlnet=controlnet,
@@ -247,8 +245,6 @@ def run_inference(sketch_image: Image.Image, ref_images: List[Image.Image], args
 
 def run_case_inference(case_num):
     case_folder = os.path.join("./case", f"case{case_num}")
-    # sketch_image_path = os.path.join(case_folder, f"case{case_num}.jpg")
-    # sketch_image = Image.open(sketch_image_path)
     sketch_image = Image.open(os.path.join(case_folder, "sketch.jpg"))
 
     ref_images = []
@@ -356,7 +352,7 @@ if __name__ == "__main__":
     global args
     
     args = parse_args()
-    args.pretrained_model_name_or_path = '/hpc2hdd/home/yzhang472/work/Moore-AnimateAnyone/pretrained_weights/stable-diffusion-v1-5'
+    args.pretrained_model_name_or_path = '../ckpt/stable-diffusion-v1-5'
     args.refnet_clip_vision_encoder_path = '../ckpt/clip-vit-large-patch14'
     args.controlnet_clip_vision_encoder_path = '../ckpt/clip-vit-large-patch14'
     args.controlnet_model_name_or_path = '../ckpt/controlnet_lineart'
@@ -377,7 +373,6 @@ if __name__ == "__main__":
     with gr.Blocks(css=".gradio-container {max-width: 1200px; margin: 0 auto;}") as demo:
        
         gr.Markdown("# MagicColor: Multi-instance Sketch Colorization")
-        # gr.Markdown("## Line art colorization with multipe reference images")
         gr.Markdown("## User Guide: \n 1. Upload a sketch image \n 2. Click add reference (one or more images/instances) \n 3. Click generate result!") #(if you don't have, you can upload a random image and the model automatically extracts the line art.)
         gr.Markdown("We random select a few example and you can click 【select case】 to experience. Case images are thumbnails(缩略图), click on one of them to see them all (sketch, references, result).")
        

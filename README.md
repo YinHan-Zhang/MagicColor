@@ -54,7 +54,8 @@ Install Grounded-Segment-Anything see here -> [install guideline](https://github
 
 ### Interface
  run the script:
-
+ 
+    cd inference
     python gradio_app.py
 
 The gradio demo would look like the UI shown below.
