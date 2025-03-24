@@ -59,19 +59,19 @@ Then, you can train the model on your dataset:
 ### Inference
 Dataset Format:
 
-data/
-├── dir_name
-    ├──masks/
-        ├── mask_1.png
-        ├── mask_2.png
-        ├── ...
-        ├── mask_n.jpg
+    data/
+    ├── dir_name
+        ├──masks/
+            ├── mask_1.png
+            ├── mask_2.png
+            ├── ...
+            ├── mask_n.jpg
 
-    ├── dir_name_1.jpg
-    ├── dir_name_2.jpg
-    ├── ...
-    ├── dir_name_2.jpg
-    ├── sketch.jpg
+        ├── dir_name_1.jpg
+        ├── dir_name_2.jpg
+        ├── ...
+        ├── dir_name_n.jpg
+        ├── sketch.jpg
 
 then,
 
@@ -82,19 +82,32 @@ then,
 ### Train
 Dataset Format:
 
-data/
-├── dir_name
-    ├──masks/
-        ├── mask_1.png
-        ├── mask_2.png
-        ├── ...
-        ├── mask_n.jpg
+    data/
+    ├── dir_name1
+        ├──masks/
+            ├── mask_1.png
+            ├── mask_2.png
+            ├── ...
+            ├── mask_n.jpg
 
-    ├── dir_name_1.jpg
-    ├── dir_name_2.jpg
-    ├── ...
-    ├── dir_name_2.jpg
-    ├── dir_name.jpg
+        ├── dir_name1_1.jpg
+        ├── dir_name1_2.jpg
+        ├── ...
+        ├── dir_name1_n.jpg
+        ├── dir_name1.jpg
+
+    ├── dir_name2
+        ├──masks/
+            ├── mask_1.png
+            ├── mask_2.png
+            ├── ...
+            ├── mask_n.jpg
+
+        ├── dir_name2_1.jpg
+        ├── dir_name2_2.jpg
+        ├── ...
+        ├── dir_name2_n.jpg
+        ├── dir_name2.jpg
 
 then,
 
