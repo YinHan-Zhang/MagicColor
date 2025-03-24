@@ -1,4 +1,4 @@
-# MagicColor: Multi-instance Sketch Colorization
+# MagicColor: Multi-Instance Sketch Colorization
 ![](./asset/logo.png)
 
 ## News
@@ -11,7 +11,7 @@ We present MagicColor, a diffusion-based framework for multi-instance sketch col
 ![](./asset/intro.jpg)
 
 ### Gallery
-Given a set of references and corresponding line art image, our approach enables coloring sketch while maintaining consistency across multiple instances. Compared to traditional methods, our approach significantly improves coloring efficiency.
+Given a set of references and corresponding line art images, our approach enables coloring sketches while maintaining consistency across multiple instances. Compared to traditional methods, our approach significantly improves coloring efficiency.
 
 ![](./asset/teaser.jpg)
 
