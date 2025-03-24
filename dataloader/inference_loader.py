@@ -28,8 +28,7 @@ class InferPairDataset(Dataset):
             stride,
             transform=None,
         ):
-        # folder = Path(data_dir)
-        # self.frame_folder = [os.path.join(data_dir,str(x.name)) for x in folder.iterdir() if x.is_dir()]
+
         self.frame_folder = data_dir
         self.length = len(self.frame_folder)
         print(f" data from -> {data_dir}, load video total length: {self.length}")

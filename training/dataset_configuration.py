@@ -49,9 +49,6 @@ def prepare_dataset(
     ]
     train_transform = transforms.Compose(train_transform_list)
 
-    # val_transform_list = [
-    #     transforms.ToTensor(),
-    # ]
     val_transform = transforms.Compose(train_transform_list)        
         
     train_dataset = Dataset(
@@ -65,7 +62,7 @@ def prepare_dataset(
     )
     if vallist:
         test_dataset = Dataset(
-            data_dir=vallist, # vallist as path, multi_ref
+            data_dir=vallist,
             dataset_name=dataset_name,
             datalist=vallist,
             height=height,
@@ -78,9 +75,6 @@ def prepare_dataset(
 
     img_height, img_width = train_dataset.get_img_size()
 
-    # datathread=0
-    # if os.environ.get('datathread') is not None:
-    #     datathread = int(os.environ.get('datathread'))
     
     if logger is not None:
         logger.info("Use %d processes to load data..." % datathread)

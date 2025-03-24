@@ -57,7 +57,6 @@ from dataset_configuration import prepare_dataset,Disparity_Normalization,resize
 from dataloader.image_multipair_loader import PairDataset
 from torch.utils.data import DataLoader, Dataset
 
-# from inference.image_pair_edit_pipeline_half import ImagePairEditPipelineHalf
 from inference.image_pair_edit_pipeline_multi_ref import ImagePairEditPipeline
 
 from src.models.mutual_self_attention_multi_scale import ReferenceAttentionControl
@@ -65,7 +64,6 @@ from src.models.unet_2d_condition import UNet2DConditionModel
 from src.models.refunet_2d_condition import RefUNet2DConditionModel
 from src.models.dino_model import FrozenDinoV2Encoder
 from src.models.projection import Projection
-from src.point_network import PointNet
 
 
 from PIL import Image
@@ -242,7 +240,7 @@ class Net(nn.Module):
     ):
         down_block_res_samples, mid_block_res_sample = None, None
         ref_ft = None
-        # 1.ref unet
+     
         if not uncond_fwd:
             if self.reference_unet:
                 ref_timesteps = torch.zeros_like(timesteps)
@@ -259,7 +257,6 @@ class Net(nn.Module):
                
                 self.reference_control_reader.update(self.reference_control_writer)
                 
-        # 2.controlnet
         if self.controlnet:
             noisy_latents, sketch_cond , controlnet_image = controlnet_inputs
 
@@ -271,7 +268,6 @@ class Net(nn.Module):
                 return_dict=False,
             )
         
-        # 3.predict
         if uncond_control:
             model_pred = self.denoising_unet(
                 unet_input,

@@ -135,43 +135,15 @@ def show_box(box, ax, label):
     ax.add_patch(plt.Rectangle((x0, y0), w, h, edgecolor='green', facecolor=(0,0,0,0), lw=2)) 
     ax.text(x0, y0, label)
 
-import cv2
+
 def save_mask_data(output_dir, tags_chinese, mask_list, box_list, label_list):
-    value = 0  # 0 for background
-
-    # mask_img = torch.zeros(mask_list.shape[-2:])
+    
     for idx, mask in enumerate(mask_list):
-
         mask_img = torch.zeros(mask_list.shape[-2:])
         mask_img[mask.cpu().numpy()[0] == True] = 1 
         mask_img_uint8 = (mask_img.numpy() * 255).astype(np.uint8)
         cv2.imwrite(output_dir+f'/mask_{idx}.png', mask_img_uint8)
 
-
-    # plt.figure(figsize=(10, 10))
-    # plt.imshow(mask_img.numpy())
-    # plt.axis('off')
-    # plt.savefig(os.path.join(output_dir, 'mask.jpg'), bbox_inches="tight", dpi=300, pad_inches=0.0)
-
-    # json_data = {
-    #     'tags_chinese': tags_chinese,
-    #     'mask':[{
-    #         'value': value,
-    #         'label': 'background'
-    #     }]
-    # }
-    # for label, box in zip(label_list, box_list):
-    #     value += 1
-    #     name, logit = label.split('(')
-    #     logit = logit[:-1] # the last is ')'
-    #     json_data['mask'].append({
-    #         'value': value,
-    #         'label': name,
-    #         'logit': float(logit),
-    #         'box': box.numpy().tolist(),
-    #     })
-    # with open(os.path.join(output_dir, 'label.json'), 'w') as f:
-    #     json.dump(json_data, f)
     
 
 if __name__ == "__main__":
@@ -227,11 +199,6 @@ if __name__ == "__main__":
     text_threshold = args.text_threshold
     iou_threshold = args.iou_threshold
     device = args.device
-    
-    # ChatGPT or nltk is required when using tags_chineses
-    # openai.api_key = openai_key
-    # if openai_proxy:
-        # openai.proxy = {"http": openai_proxy, "https": openai_proxy}
 
     
     #  ------------- load dino model -------------
@@ -239,7 +206,7 @@ if __name__ == "__main__":
 
     #  ------------- load ram model  ------------- 
     ram_model = ram(pretrained=ram_checkpoint,
-                                        image_size=384, #384
+                                        image_size=384,
                                         vit='swin_l')
     # threshold for tagging, we reduce the threshold to obtain more tags
     ram_model.eval()
@@ -254,7 +221,7 @@ if __name__ == "__main__":
 
     # ------------- load data ------------- 
     print("start to loading data ... ")
-    img_dir = [name for name in os.listdir(data_dir) if os.path.isdir(os.path.join(data_dir, name))][2000:5000]
+    img_dir = [name for name in os.listdir(data_dir) if os.path.isdir(os.path.join(data_dir, name))]
 
     for image_dir in tqdm(img_dir):
         image_path = os.path.join(data_dir, image_dir) + f"/{image_dir}.png"
@@ -276,7 +243,7 @@ if __name__ == "__main__":
         normalize = TS.Normalize(mean=[0.485, 0.456, 0.406],
                                         std=[0.229, 0.224, 0.225])
         transform = TS.Compose([
-                        TS.Resize((384, 384)), #384
+                        TS.Resize((384, 384)), 
                         TS.ToTensor(), normalize
                     ])
         
@@ -294,10 +261,11 @@ if __name__ == "__main__":
 
         # print("Image Tags: ", res[0])
         # print("图像标签: ", res[1])
-       
+
+        manual_label = "person,boy,girl,animal,"
         # ------------- run grounding dino model ------------- 
         boxes_filt, scores, pred_phrases = get_grounding_output(
-            model, image, "person,boy,girl,animal,"+tags, box_threshold, text_threshold, device=device
+            model, image, manual_label+tags, box_threshold, text_threshold, device=device
         )
         # filter box
         image = cv2.imread(image_path)

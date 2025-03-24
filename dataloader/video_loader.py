@@ -12,7 +12,7 @@ import csv
 from tqdm import tqdm
 from decord import VideoReader
 import sys
-sys.path.append("/hpc2hdd/home/yzhang472/work/colorization/dataloader")
+sys.path.append("../dataloader")
 import transforms
 import cv2
 class PairDataset(Dataset):

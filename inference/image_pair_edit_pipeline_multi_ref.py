@@ -217,7 +217,7 @@ class ImagePairEditPipeline(DiffusionPipeline):
                     truncation=True,
                     return_tensors="pt",
                 )
-                text_input_ids = text_inputs.input_ids.to(device) #[1,2]
+                text_input_ids = text_inputs.input_ids.to(device)
                 empty_text_embed = text_encoder(text_input_ids)[0].to(self.dtype)
                 uncond_encoder_hidden_states = empty_text_embed.repeat((1, 1, 1))[:,0,:].unsqueeze(0)
                 return uncond_encoder_hidden_states

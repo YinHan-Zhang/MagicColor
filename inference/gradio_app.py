@@ -373,13 +373,12 @@ if __name__ == "__main__":
     with gr.Blocks(css=".gradio-container {max-width: 1200px; margin: 0 auto;}") as demo:
        
         gr.Markdown("# MagicColor: Multi-instance Sketch Colorization")
-        gr.Markdown("## User Guide: \n 1. Upload a sketch image \n 2. Click add reference (one or more images/instances) \n 3. Click generate result!") #(if you don't have, you can upload a random image and the model automatically extracts the line art.)
-        gr.Markdown("We random select a few example and you can click 【select case】 to experience. Case images are thumbnails(缩略图), click on one of them to see them all (sketch, references, result).")
+        gr.Markdown("## User Guide: \n 1. Upload a sketch image \n 2. Click add reference (one or more images/instances) \n 3. Click generate result!")
        
         ref_count = gr.State(0)
 
         with gr.Row():
-            # left：upload ref img
+
             with gr.Column(scale=1, elem_classes="card"):
                
                 with gr.Row():
@@ -394,7 +393,7 @@ if __name__ == "__main__":
                             ref_inputs.append(input_img)
                 gr.Markdown("")  
                 add_ref_button = gr.Button("Add Reference Image", variant="secondary", scale=1)
-            # right: generate result
+    
             with gr.Column(scale=1, elem_classes="card"):
                
                 gr.Markdown("### Generated Result")

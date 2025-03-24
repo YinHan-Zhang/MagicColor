@@ -38,22 +38,73 @@ Install Grounded-Segment-Anything see here -> [install guideline](https://github
 
     mv automatic_label.py Grounded-Segment-Anything/
 
-### Download pretrain weight
+Then, you can train the model on your dataset:
+
+    python automatic_label.py \
+        --config GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py \
+        --ram_checkpoint ./ckpt/ram_swin_large_14m.pth \
+        --grounded_checkpoint ./ckpt/groundingdino_swint_ogc.pth \
+        --sam_checkpoint ./ckpt/sam_vit_h_4b8939.pth \
+        --data_dir  ./data \
+        --output_dir ./data_res \
+        --box_threshold 0.15 \
+        --text_threshold 0.15 \
+        --iou_threshold 0.15 \
+        --device "cuda"
+
+### Download pre-trained weight
 
     bash download.sh
 
-### Train
-    cd scripts
+### Inference
+Dataset Format:
 
-    bash multi_ref_train.sh
+data/
+├── dir_name
+    ├──masks/
+        ├── mask_1.png
+        ├── mask_2.png
+        ├── ...
+        ├── mask_n.jpg
 
-### Inference 
+    ├── dir_name_1.jpg
+    ├── dir_name_2.jpg
+    ├── ...
+    ├── dir_name_2.jpg
+    ├── sketch.jpg
+
+then,
+
     cd scripts
     
     bash multi_ref_infer.sh
 
+### Train
+Dataset Format:
+
+data/
+├── dir_name
+    ├──masks/
+        ├── mask_1.png
+        ├── mask_2.png
+        ├── ...
+        ├── mask_n.jpg
+
+    ├── dir_name_1.jpg
+    ├── dir_name_2.jpg
+    ├── ...
+    ├── dir_name_2.jpg
+    ├── dir_name.jpg
+
+then,
+
+    cd scripts
+
+    bash multi_ref_train.sh
+
+
 ### Interface
- run the script:
+run the script:
  
     cd inference
     python gradio_app.py

@@ -217,11 +217,6 @@ if __name__=="__main__":
     else:
         dtype = torch.float32
 
-    # setting_config = args.setting_config 
-    # preprocessor = setting_configs[args.setting_config].get('preprocessor', None)
-    # in_channels_reference_unet = setting_configs[args.setting_config].get('in_channels_reference_unet', None)
-    # in_channels_denoising_unet = setting_configs[args.setting_config].get('in_channels_denoising_unet', None)
-    # in_channels_controlnet = setting_configs[args.setting_config].get('in_channels_controlnet', None)
     preprocessor = "lineart_anime"
     in_channels_reference_unet = 4
     in_channels_denoising_unet = 4
@@ -250,7 +245,7 @@ if __name__=="__main__":
     else:
         vae = AutoencoderKL.from_pretrained(
             # args.pretrained_model_name_or_path, 
-            "/hpc2hdd/home/yzhang472/work/Moore-AnimateAnyone/pretrained_weights/sd-vae-ft-mse",
+            "ckpt/sd-vae-ft-mse",
             # subfolder="vae",
             use_safetensors=False
             )
@@ -267,7 +262,6 @@ if __name__=="__main__":
         denoising_unet_path = os.path.join(args.checkpoint_path, 'denoising_unet.pth')
         reference_unet_path = os.path.join(args.checkpoint_path, 'reference_unet.pth')
         
-        # torch.set_rng_state(.state_dict['random_state'])
 
         # load checkpoint
         denoising_unet.load_state_dict(torch.load(denoising_unet_path, map_location="cpu"), strict=False)
@@ -300,7 +294,7 @@ if __name__=="__main__":
         # load controlnet
         if not os.path.exists(args.checkpoint_path):
             import json
-            with open('/hpc2hdd/home/yzhang472/work/colorization/ckpt/controlnet/config.json', "r") as f:
+            with open('/ckpt/controlnet/config.json', "r") as f:
                 config = json.load(f)
             controlnet_multi = ControlNetModel(**config)
 
@@ -377,7 +371,7 @@ if __name__=="__main__":
     dataset = InferPairDataset(
         data_dir=data_dir,
         dataset_name=dataset_name,
-        datalist=None, # video path
+        datalist=None,
         height=512,
         width=512,
         stride=4,
@@ -409,10 +403,8 @@ if __name__=="__main__":
             to_save_dict = pipe_out.to_save_dict
             to_save_dict['pred2'] = pipe_out.img_pil
             
-            import cv2
             images_tensor = []
             for image_name, image in to_save_dict.items():
-                ## save by single img
                 if image_name in ['ref1','raw2','edge2','pred2']:
                     image_save_path = os.path.join(data_dir[i]+f"/00", f'{image_name}.png')
                     if os.path.exists(image_save_path):
@@ -422,18 +414,3 @@ if __name__=="__main__":
                     print(f"img save in {image_save_path}")
                     os.makedirs(data_dir[i]+f"/00", exist_ok=True)
                     image.save(image_save_path)
-
-            #     ## save by grid
-            #     if image_name in ['ref1','raw2','edge2','pred2']:
-            #         image_np = np.array(image)
-            #         image_tensor = torch.tensor(image_np, dtype=torch.uint8)
-            #         image = torch.cat([image_tensor], 1)
-            #         images_tensor.append(image)
-                
-            # gen_img = torch.cat(images_tensor, 1)
-            # gen_img_np = cv2.cvtColor(gen_img.cpu().numpy(), cv2.COLOR_RGB2BGR)
-            # # 保存拼接后的图像
-            # image_save_path = os.path.join(args.output_dir, f'output_{index}.png')
-            # cv2.imwrite(
-            #     image_save_path, gen_img_np
-            # )
