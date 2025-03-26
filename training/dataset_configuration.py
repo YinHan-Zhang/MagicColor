@@ -36,8 +36,6 @@ def prepare_dataset(
         from dataloader.image_pair_loader import PairDataset as Dataset
     elif dataset_name == 'multi':
         from dataloader.image_multipair_loader_add import PairDataset as Dataset
-    elif dataset_name == 'no_instance':
-        from dataloader.image_multipair_loader_no_instance import PairDataset as Dataset
     else:
         from dataloader.video_loader import PairDataset as Dataset
 

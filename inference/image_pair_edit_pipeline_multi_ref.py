@@ -24,8 +24,6 @@ from image_util import resize_max_res,chw2hwc
 import albumentations as A
 from torchvision import transforms as T
 from albumentations.pytorch import ToTensorV2
-# from utils.colormap import kitti_colormap
-# from utils.depth_ensemble import ensemble_depths
 
 from models.mutual_self_attention import ReferenceAttentionControl
 from models.unet_2d_condition import UNet2DConditionModel
@@ -291,19 +289,11 @@ class ImagePairEditPipeline(DiffusionPipeline):
                     chw2hwc(((v.squeeze().detach().cpu().numpy() + 1.) / 2 * 255).astype(np.uint8))
                 )
         
-            # torch.cuda.empty_cache()  # clear vram cache for ensembling
-        
-            # ----------------- Post processing -----------------        
-            # Convert to numpy
             img_pred = img_pred.squeeze().cpu().numpy().astype(np.float32)
             img_pred_np = (((img_pred + 1.) / 2.) * 255).astype(np.uint8)
             img_pred_np = chw2hwc(img_pred_np)
             img_pred_pil = Image.fromarray(img_pred_np)
 
-            # # Resize back to original resolution
-            # if match_input_res:
-            #     img_pred_pil = img_pred_pil.resize(input_size)
-            #     img_pred_np = np.asarray(img_pred_pil)
                 
             output_list.append(
                 ImagePairEditPipelineOutput(
@@ -426,28 +416,20 @@ class ImagePairEditPipeline(DiffusionPipeline):
             'gt2': raw2,
         }
         
-        # Set timesteps: inherit from the diffusion pipeline
-        self.scheduler.set_timesteps(num_inference_steps, device=device) # here the numbers of the steps is only 10.
-        timesteps = self.scheduler.timesteps  # [T]
+
+        self.scheduler.set_timesteps(num_inference_steps, device=device)
+        timesteps = self.scheduler.timesteps
         
-        # encode image
-        ref1_latents = self.encode_RGB(ref1, generator=generator) # 1/8 Resolution with a channel nums of 4. 
-        raw2_latents = self.encode_RGB(raw2, generator=generator) # 1/8 Resolution with a channel nums of 4. 
+        ref1_latents = self.encode_RGB(ref1, generator=generator)
+        raw2_latents = self.encode_RGB(raw2, generator=generator)
         edge2 = raw2
         
-        # # raw img extract sketch
-        # edge2 = preprocessor(edge2)
-        # edge2[edge2 <= 0.25] = 0
-        # edge2 = edge2.repeat(1, 3, 1, 1) * 2 - 1
-        # print(f"edge2: {edge2},edge2 out shape: {edge2.shape}")
         edge2_latents = self.encode_RGB(edge2, generator=generator)
         to_save_dict['edge2'] = edge2
         
-        # Initial depth map (Guassian noise)
         noisy_edit2_latents = torch.randn(
             raw2_latents.shape, device=device, dtype=self.dtype
-        )  # [B, 4, H/8, W/8]
-   
+        ) 
         # Denoising loop
         if show_pbar:
             iterable = tqdm(
@@ -503,7 +485,7 @@ class ImagePairEditPipeline(DiffusionPipeline):
                 unet_input.repeat(
                     (2 if do_classifier_free_guidance else 1), 1, 1, 1).to(dtype=self.denoising_unet.dtype), 
                 t, 
-                encoder_hidden_states=controlnet_encoder_hidden_states,#refnet_encoder_hidden_states,# 768
+                encoder_hidden_states=controlnet_encoder_hidden_states,
                 down_block_additional_residuals=down_block_res_samples,
                 mid_block_additional_residual=mid_block_res_sample,
                 ref_ft = ref_ft
@@ -515,7 +497,6 @@ class ImagePairEditPipeline(DiffusionPipeline):
                 noise_pred_text - noise_pred_uncond
             )
 
-            # 5. compute the previous noisy sample x_t -> x_t-1
             noisy_edit2_latents = self.scheduler.step(noise_pred, t, noisy_edit2_latents).prev_sample
         
         # clear ref attn

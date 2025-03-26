@@ -114,24 +114,20 @@ class PairDataset(Dataset):
             if ins_num <= 0:
                 return None
 
-            # 用于记录已经被占用的区域，避免重叠
             occupied_regions = []
             try:
                 for p_id in range(ins_num):
-                    # overfit
                     ins_path = curr_anno + f"/{base_name}_{p_id+1}.jpg"
                     if os.path.exists(ins_path):
                         ins_img = np.array(Image.open(ins_path).convert("RGB").resize((curr_width, curr_height), Image.NEAREST))
                         mask_loca = curr_anno + f"/masks/mask_{p_id+1}.png"
                     else:
-                        # not overfit
                         ins_path = img1_path
                         ins_img = np.array(Image.open(ins_path).convert("RGB").resize((curr_width, curr_height), Image.NEAREST))
                         mask_loca = curr_anno + f"/masks/mask_{p_id}.png"
 
                     ins_mask = np.array(Image.open(mask_loca).resize((curr_width, curr_height), Image.NEAREST))
                 
-                    # 计算每个实例的边界框
                     y_indices, x_indices = np.where(ins_mask > 0)
                     if len(y_indices) == 0 or len(x_indices) == 0:
                         continue
@@ -139,15 +135,12 @@ class PairDataset(Dataset):
                     x_min, x_max = np.min(x_indices), np.max(x_indices)
                     mask_size = (y_max - y_min, x_max - x_min)
 
-                    # 自适应放缩实例大小
                     target_size = self.adaptive_scale_size(ins_num, mask_size)
                     instance = ins_img[y_min:y_max, x_min:x_max, :]
-                    # 解决颜色溢出及颜色失真问题：先归一化，再转换到合适的整数范围并保持颜色相对准确
                     instance = self.normalize_and_convert(instance)
-                    # 放缩实例图像到目标大小
+                
                     resized_instance = cv2.resize(instance, target_size[::-1])
 
-                    # 寻找合适的放置位置，避免重叠
                     placed = False
                     for y_start in range(curr_height - target_size[0] + 1):
                         for x_start in range(curr_width - target_size[1] + 1):
@@ -173,58 +166,54 @@ class PairDataset(Dataset):
                     if len(ins_mask.shape)!= 2:
                         ins_mask = ins_mask[:, :, 0]
                     
-                    # 取出原来的instance
                     _, ins_mask = cv2.threshold(ins_mask, 127, 255, cv2.THRESH_BINARY)
                     ins_mask = (ins_mask / 255).astype(np.uint8)
-                    # 扩展掩码维度以匹配图像的通道数
+                    
                     ins_mask_expanded = np.expand_dims(ins_mask, axis=-1)
                     ins_mask_expanded = np.repeat(ins_mask_expanded, ins_img.shape[-1], axis=-1)
-                    # 使用掩码提取实例区域
+
                     ori_instance = ins_img * ins_mask_expanded
-                    # Image.fromarray(ori_instance.astype(np.uint8)).save(f"./instance_{p_id}.jpg")
+                   
 
-                    img_mask[ins_mask!= 0] = p_id + 1  # 分类不同掩码, ins mask add to img mask
+                    img_mask[ins_mask!= 0] = p_id + 1 
 
-                    # 加载实例图像 -> 参考, instance controlnet
+
                     if os.path.exists(ins_path):
-                        ins_rgb.append(ori_instance) # ins_img : 全局整张图像
+                        ins_rgb.append(ori_instance) 
                         ins_rgb_id.append(p_id + 1)
                     else:
-                        ins_rgb.append(Image.open(mask_loca).convert("RGB"))  # 虚拟图像块
+                        ins_rgb.append(Image.open(mask_loca).convert("RGB"))
                     
-                    if ins_num == 1: # 只有单张mask, 复制一张
+                    if ins_num == 1: 
                         ins_rgb.append(ins_img)
                         ins_rgb_id.append(p_id + 1)
 
-                # local_img = Image.fromarray(local_img.astype(np.uint8))
-                # local_img.save("/hpc2hdd/home/yzhang472/work/colorization/video_dataset/clip_image_pair/local_img.png")
                 prob_ = random.uniform(0, 1)
                 if prob_ < 0.3:
-                    sample["img1"] = np.array(Image.open(img1_path).convert('RGB')) # 整张图片
+                    sample["img1"] = np.array(Image.open(img1_path).convert('RGB'))
                 else:
                     sample["img1"] = np.array(local_img)
                 sample = self.transform(sample)
 
-                # 双线性插值调整图像大小
                 sample['img1'] = F.interpolate(sample['img1'][None], size=(self.height, self.width), mode='bilinear', align_corners=False)[0]
                 sample['img2'] = F.interpolate(sample['img2'][None], size=(self.height, self.width), mode='bilinear', align_corners=False)[0]
 
                 sample['clip_images'] = self.clip_image_processor(
                     images=np.uint8(((sample["img1"].numpy().transpose(1, 2, 0) + 1) / 2) * 255),
                     return_tensors="pt"
-                ).pixel_values[0]  # [H, W, 3]
+                ).pixel_values[0] 
 
-                img_mask = Image.fromarray(img_mask)  # 所有掩码
+                img_mask = Image.fromarray(img_mask) 
 
                 patches = []
                 use_patch = 1
                 if use_patch:
-                    sel_ins = []  # 索引
-                    img_np_raw = np.array(img, dtype=np.uint8)  # 空白图像
-                    mask_np_raw = np.array(img_mask, dtype=np.uint8)  # 所有掩码
+                    sel_ins = []
+                    img_np_raw = np.array(img, dtype=np.uint8)  
+                    mask_np_raw = np.array(img_mask, dtype=np.uint8)
 
-                    all_ins = ins_rgb_id  # 实例数量
-                    # 添加实例图像到图像块
+                    all_ins = ins_rgb_id 
+                    
                     for id_ins, curr_ins in enumerate(all_ins):
                         cropped_img = ins_rgb[curr_ins - 1]
                         cropped_img = self.dino_transforms_noflip(image=np.array(cropped_img))
@@ -256,11 +245,9 @@ class PairDataset(Dataset):
                         (curr_width, curr_height),
                     ]
 
-                # 调整掩码图像大小（这里根据你的需求选择合适的调整逻辑，目前按照不除以8的方式来处理）
                 img_mask = img_mask.resize((curr_width, curr_height), Image.NEAREST)
 
-                # 原始图像变换
-                img = self.image_transforms(img)  # [None]
+                img = self.image_transforms(img) 
 
                 fea_mask = torch.tensor(np.array(img_mask))
 
@@ -272,7 +259,7 @@ class PairDataset(Dataset):
                     "img1": sample['img1'],
                     "img2": sample['img2'],
                     "clip_images": sample['clip_images'],
-                    "ctrl_img": mul_ctrl_img,  # 整个掩码
+                    "ctrl_img": mul_ctrl_img,
                     "patches": mul_patches,
                     "extract": extract
                 }
@@ -292,7 +279,7 @@ class PairDataset(Dataset):
             case_folder = Path(data_dir)
             case_dir = [os.path.join(data_dir,str(x.name)) for x in case_folder.iterdir() if x.is_dir()]
             idx = random.randint(0, len(case_dir)-1)
-            curr_anno = case_dir[idx]  # dataset dir name
+            curr_anno = case_dir[idx] 
 
             if not os.path.exists(curr_anno + "/masks"):
                 return None
@@ -392,7 +379,7 @@ class PairDataset(Dataset):
 
                 prob_ = random.uniform(0, 1)
                 if prob_ < 0.3:
-                    sample["img1"] = np.array(Image.open(img1_path).convert('RGB')) # 单张图片
+                    sample["img1"] = np.array(Image.open(img1_path).convert('RGB'))
                 else:
                     sample["img1"] = np.array(local_img)
                 sample = self.transform(sample)

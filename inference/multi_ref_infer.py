@@ -161,8 +161,8 @@ def parse_args():
     parser.add_argument(
         "--setting_config",
         type=str,
-        default="v00-naive-unet-edit2-raw2-refnet-ref1",
-        help="setting name (default: v00-naive-unet-edit2-raw2-refnet-ref1)" # training.setting_config
+        default="",
+        help="" # training.setting_config
     )
     parser.add_argument(
         "--edge2_src_mode",
@@ -206,9 +206,6 @@ if __name__=="__main__":
         logging.warning("CUDA is not available. Running on CPU will be slow.")
     logging.info(f"device = {device}")
     
-    
-    # -------------------Data----------------------------
-    # logging.info("Inference Image Path from {}, {}, and {}".format(args.validation_ref1, args.validation_raw2, args.validation_edit2))
 
     # -------------------- Model --------------------
     if args.half_precision:
@@ -240,8 +237,6 @@ if __name__=="__main__":
     # declare a pipeline
     if not use_seperate:
         raise NotImplementedError
-        # pipe = ImagePairEditPipeline.from_pretrained(pretrained_model_name_or_path, torch_dtype=dtype, use_safetensors=True)
-        # print("Using Completed")
     else:
         vae = AutoencoderKL.from_pretrained(
             # args.pretrained_model_name_or_path, 

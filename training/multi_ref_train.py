@@ -28,23 +28,17 @@ import shutil
 from accelerate.utils import DistributedDataParallelKwargs
 import diffusers
 from diffusers import (
-    # UNet2DConditionModel,
     ControlNetModel,
     MultiControlNetModel,
-    DiffusionPipeline,
     DDIMScheduler,
     AutoencoderKL,
 )
 
 from diffusers.optimization import get_scheduler
-from diffusers.training_utils import EMAModel, compute_snr
-from diffusers.utils import check_min_version, deprecate, is_wandb_available, make_image_grid
-from diffusers.utils.import_utils import is_xformers_available
-from diffusers.utils.torch_utils import is_compiled_module
+
 
 
 from packaging import version
-from torchvision import transforms
 from tqdm.auto import tqdm
 from transformers import CLIPTextModel, CLIPTokenizer
 from transformers.utils import ContextManagers
@@ -52,18 +46,13 @@ import accelerate
 import cv2
 import numpy as np
 
-# import ipdb;ipdb.set_trace()
-from dataset_configuration import prepare_dataset,Disparity_Normalization,resize_max_res_tensor
-from dataloader.image_multipair_loader import PairDataset
-from torch.utils.data import DataLoader, Dataset
-
+from dataset_configuration import prepare_dataset,resize_max_res_tensor
 from inference.image_pair_edit_pipeline_multi_ref import ImagePairEditPipeline
 
 from src.models.mutual_self_attention_multi_scale import ReferenceAttentionControl
 from src.models.unet_2d_condition import UNet2DConditionModel
 from src.models.refunet_2d_condition import RefUNet2DConditionModel
 from src.models.dino_model import FrozenDinoV2Encoder
-from src.models.projection import Projection
 
 
 from PIL import Image
@@ -72,16 +61,9 @@ from setting_config import setting_configs
 import warnings
 warnings.filterwarnings("ignore", category=FutureWarning)
 warnings.filterwarnings("ignore", category=UserWarning)
-# Will error if the minimal version of diffusers is not installed. Remove at your own risks.
-# check_min_version("0.26.0.dev0")
+
 
 logger = get_logger(__name__, log_level="INFO")
-def safe_round(coords, size):
-    height, width = size[1], size[2]  
-    rounded_coords = np.round(coords).astype(int)
-    rounded_coords[:, 0] = np.clip(rounded_coords[:, 0], 0, width - 1)
-    rounded_coords[:, 1] = np.clip(rounded_coords[:, 1], 0, height - 1)    
-    return rounded_coords
 
 def log_validation(
     args,
@@ -273,8 +255,6 @@ class Net(nn.Module):
                 unet_input,
                 timesteps,
                 encoder_hidden_states=refnet_image_prompt_embeds,
-                # down_block_additional_residuals=down_block_res_samples,
-                # mid_block_additional_residual=mid_block_res_sample,
                 ref_ft=ref_ft
             ).sample
         else:
@@ -792,7 +772,7 @@ def main():
 
         vae = AutoencoderKL.from_pretrained(
             # args.pretrained_model_name_or_path,
-            "/hpc2hdd/home/yzhang472/work/Moore-AnimateAnyone/pretrained_weights/sd-vae-ft-mse",
+            "../ckpt/sd-vae-ft-mse",
             # subfolder='vae',
             use_safetensors=False
         )
