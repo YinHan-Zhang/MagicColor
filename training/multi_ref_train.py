@@ -1202,8 +1202,6 @@ def main():
                 noise = torch.randn_like(raw2_latents) # create noise
                 bsz = raw2_latents.shape[0]
                 
-                # in the Stable Diffusion, the iterations numbers is 1000 for adding the noise and denosing.
-                # Sample a random timestep for each image
                 timesteps = torch.randint(0, noise_scheduler.config.num_train_timesteps, (bsz,), device=raw2_latents.device)
                 timesteps = timesteps.long()
                 
