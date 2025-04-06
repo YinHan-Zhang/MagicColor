@@ -1,9 +1,6 @@
 # MagicColor: Multi-Instance Sketch Colorization
 ![](./asset/logo.png)
 
-## News
-
-- 2025-3-15: 🎊 source code release !
 
 ## Overview
 We present MagicColor, a diffusion-based framework for multi-instance sketch colorization. Previous methods can only achieve multi-instance sketch colorization step by step, which is time-consuming and inaccurate. In contrast, our method has the capability of coloring sketches while maintaining consistency, making multi-instance sketch colorization easier.
@@ -71,13 +68,13 @@ Dataset Format:
         ├── dir_name_2.jpg
         ├── ...
         ├── dir_name_n.jpg
-        ├── sketch.jpg
+        ├── dir_name.jpg  # sketch image
 
-then,
+then, 
 
     cd scripts
     
-    bash multi_ref_infer.sh
+    bash multi_ref_infer.sh # modify input_data_dir
 
 ### Train
 Dataset Format:
@@ -85,29 +82,21 @@ Dataset Format:
     data/
     ├── dir_name1
         ├──masks/
-            ├── mask_1.png
+            ├── mask_1.png # instance mask
             ├── mask_2.png
             ├── ...
             ├── mask_n.jpg
 
-        ├── dir_name1_1.jpg
-        ├── dir_name1_2.jpg
-        ├── ...
-        ├── dir_name1_n.jpg
-        ├── dir_name1.jpg
+        ├── dir_name1.jpg # origin image
 
     ├── dir_name2
         ├──masks/
-            ├── mask_1.png
+            ├── mask_1.png # instance mask
             ├── mask_2.png
             ├── ...
             ├── mask_n.jpg
 
-        ├── dir_name2_1.jpg
-        ├── dir_name2_2.jpg
-        ├── ...
-        ├── dir_name2_n.jpg
-        ├── dir_name2.jpg
+        ├── dir_name2.jpg # origin image
 
 then,
 
@@ -121,7 +110,12 @@ run the script:
  
     cd inference
     python gradio_app.py
+    
 
-The gradio demo would look like the UI shown below.
+## Limitation
 
-![](./asset/UI.jpg)
+Due to the limitation of computing resources and data, the amount of data for model training is limited. If you have enough computing resources, you can train the model yourself.
+
+## Acknowledgement
+
+Thanks for the reference contributions of these works: Manganijia, ColorizeDiffusion, DreamBooth etc.

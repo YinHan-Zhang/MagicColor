@@ -30,24 +30,9 @@ class ToTensor(object):
         sample['img2'] = torch.from_numpy(img2) / 255. * 2.0 - 1.0
         if 'img3' in sample:
             sample['img3'] = torch.from_numpy(img2) / 255. * 2.0 - 1.0
-        # right = np.transpose(sample['img2_'], (2, 0, 1))
-        # sample['img2_'] = torch.from_numpy(right) / 255. * 2.0 - 1.0
 
         return sample
 
-# class Crop_center_square(image):
-#     h, w, _ = image.shape
-#     min_side = min(h, w)
-    
-#     # 计算中心点
-#     center_x, center_y = w // 2, h // 2
-    
-#     # 计算裁剪的起始点（top-left corner）
-#     start_x = center_x - min_side // 2
-#     start_y = center_y - min_side // 2
-    
-#     # 裁剪
-#     cropped_image = image[start_y:start_y + min_side, start_x:start_x + min_side]
 class Normalize(object):
     """Normalize image, with type tensor"""
 

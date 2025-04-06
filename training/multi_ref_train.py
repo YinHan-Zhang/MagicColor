@@ -57,7 +57,7 @@ from src.models.dino_model import FrozenDinoV2Encoder
 
 from PIL import Image
 from transformers import CLIPVisionModelWithProjection
-from setting_config import setting_configs
+from setting_config import configs
 import warnings
 warnings.filterwarnings("ignore", category=FutureWarning)
 warnings.filterwarnings("ignore", category=UserWarning)
@@ -655,8 +655,8 @@ def parse_args():
     parser.add_argument(
         "--setting_config",
         type=str,
-        default="v06-lineart_anime-unet-edit2-refnet-ref1-controlnet-lineart-edge2",
-        help="setting name (default: v00-naive-unet-edit2-raw2-refnet-ref1)"
+        default="default",
+        help="setting name (default)"
     )
     parser.add_argument(
         "--edge2_src_train_mode",
@@ -744,10 +744,10 @@ def main():
     
     # channel setting
     setting_config = args.setting_config
-    preprocessor = setting_configs[args.setting_config].get('preprocessor', 'lineart_anime')
-    in_channels_reference_unet = setting_configs[args.setting_config].get('in_channels_reference_unet', 4)
-    in_channels_denoising_unet = setting_configs[args.setting_config].get('in_channels_denoising_unet', 4)
-    in_channels_controlnet = setting_configs[args.setting_config].get('in_channels_controlnet', 4)
+    preprocessor = configs[args.setting_config].get('preprocessor', 'lineart_anime')
+    in_channels_reference_unet = configs[args.setting_config].get('in_channels_reference_unet', 4)
+    in_channels_denoising_unet = configs[args.setting_config].get('in_channels_denoising_unet', 4)
+    in_channels_controlnet = configs[args.setting_config].get('in_channels_controlnet', 4)
 
     # load sketch preprocessor
     if preprocessor == 'lineart':
@@ -820,14 +820,12 @@ def main():
                     in_channels=in_channels_controlnet,
                     low_cpu_mem_usage=False,
                     ignore_mismatched_sizes=True,
-                    # use_safetensors=False
                 )
                 controlnet_sketch = ControlNetModel.from_pretrained(
                     controlnet_sketch_ckpt_path,
                     in_channels=in_channels_controlnet,
                     low_cpu_mem_usage=False,
                     ignore_mismatched_sizes=True,
-                    # use_safetensors=False
                 )
                 controlnet = MultiControlNetModel(controlnets=[controlnet_sketch, controlnet_multi])
                 print(f"load controlnet from {controlnet_sketch_ckpt_path} success !!!")
@@ -842,7 +840,6 @@ def main():
                     in_channels=in_channels_controlnet,
                     low_cpu_mem_usage=False,
                     ignore_mismatched_sizes=True,
-                    # use_safetensors=False
                 )
                 controlnet = MultiControlNetModel(controlnets=[controlnet_sketch, controlnet_multi])
                 print(f"load controlnet from origin ...")

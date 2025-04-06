@@ -161,7 +161,7 @@ def parse_args():
     parser.add_argument(
         "--setting_config",
         type=str,
-        default="",
+        default="default",
         help="" # training.setting_config
     )
     parser.add_argument(
@@ -169,6 +169,12 @@ def parse_args():
         type=str,
         default="raw",
         help="edge2 src mode (default: raw)"
+    )
+    parser.add_argument(
+        "--data_dir",
+        type=str,
+        default="",
+        help="inference data dir"
     )
     
     args = parser.parse_args()
@@ -239,9 +245,7 @@ if __name__=="__main__":
         raise NotImplementedError
     else:
         vae = AutoencoderKL.from_pretrained(
-            # args.pretrained_model_name_or_path, 
             "ckpt/sd-vae-ft-mse",
-            # subfolder="vae",
             use_safetensors=False
             )
         scheduler = DDIMScheduler.from_pretrained(args.pretrained_model_name_or_path,subfolder='scheduler', use_safetensors=False)
@@ -360,12 +364,11 @@ if __name__=="__main__":
     else:
         generator = torch.manual_seed(args.seed)
 
-    
-    dataset_name = ""
-    data_dir = ""
+
+    data_dir = args.data_dir
     dataset = InferPairDataset(
         data_dir=data_dir,
-        dataset_name=dataset_name,
+        dataset_name=None,
         datalist=None,
         height=512,
         width=512,

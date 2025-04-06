@@ -28,7 +28,6 @@ lr_warmup_steps=10
 dataloader_num_workers=8
 resume_from_checkpoint='latest'
 
-# validation config
 vallist=""
 validation_steps=2000
 checkpointing_steps=2000

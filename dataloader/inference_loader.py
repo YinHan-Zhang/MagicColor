@@ -241,8 +241,7 @@ class InferPairDataset(Dataset):
         new_h = int(h * ratio)
         new_w = int(w * ratio)
         return (new_h, new_w)
-        
-        
+           
 
     def normalize_and_convert(self, instance):
         instance = (instance - np.min(instance)) / (np.max(instance) - np.min(instance))

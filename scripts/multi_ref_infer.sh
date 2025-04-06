@@ -6,7 +6,7 @@ refnet_clip_vision_encoder_path='../ckpt/clip-vit-large-patch14'
 controlnet_clip_vision_encoder_path='../ckpt/clip-vit-large-patch14'
 controlnet_model_name_or_path='../ckpt/controlnet_lineart'
 annotator_ckpts_path='../ckpt/Annotators'
-checkpoint_path="./ckpt/checkpoint-090000"
+checkpoint_path="../ckpt/checkpoint-090000"
 
 # dataset config
 height=512 
@@ -16,6 +16,7 @@ stride=24 # clip length
 #training config
 output_dir='../outputs'
 config='dafault'
+input_data_dir=""
 
 CUDA_VISIBLE_DEVICES=0 accelerate launch --main_process_port 0 --mixed_precision=no multi_ref_infer.py  \
                   --pretrained_model_name_or_path $pretrained_model_name_or_path \
@@ -30,4 +31,5 @@ CUDA_VISIBLE_DEVICES=0 accelerate launch --main_process_port 0 --mixed_precision
                   --processing_res 512 \
                   --output_processing_res \
                   --setting_config $config \
-                  --batch_size 1 
+                  --batch_size 1 \
+                  --data_dir $input_data_dir

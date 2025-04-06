@@ -364,7 +364,7 @@ if __name__ == "__main__":
     args.guidance_scale = 9.0
     args.seed = 123
     args.batch_size = 1
-    args.setting_config = "v00-naive-unet-edit2-raw2-refnet-ref1"
+    args.setting_config = "default"
     args.edge2_src_mode = "raw"
     args.output_processing_res = True
 
