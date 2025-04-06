@@ -27,7 +27,7 @@ Given a set of references and corresponding line art images, our approach enable
     
     cd MagicColor
 
-Use GSA to automatically extract masks:
+Use tools to automatically extract masks:
 
     git clone https://github.com/IDEA-Research/Grounded-Segment-Anything.git
 
@@ -64,7 +64,7 @@ Dataset Format:
             ├── ...
             ├── mask_n.jpg
 
-        ├── dir_name_1.jpg
+        ├── dir_name_1.jpg # reference instance
         ├── dir_name_2.jpg
         ├── ...
         ├── dir_name_n.jpg
@@ -87,7 +87,7 @@ Dataset Format:
             ├── ...
             ├── mask_n.jpg
 
-        ├── dir_name1.jpg # origin image
+        ├── dir_name1.jpg # origin image 1
 
     ├── dir_name2
         ├──masks/
@@ -96,7 +96,7 @@ Dataset Format:
             ├── ...
             ├── mask_n.jpg
 
-        ├── dir_name2.jpg # origin image
+        ├── dir_name2.jpg # origin image 2
 
 then,
 
@@ -110,7 +110,7 @@ run the script:
  
     cd inference
     python gradio_app.py
-    
+
 
 ## Limitation
 

@@ -42,7 +42,7 @@ class PairDataset(Dataset):
     def get_batch(self, idx):
         try:   
             video_path = os.path.join(self.video_folder, self.videos[idx])
-            # print(video_path)
+            
             with open(video_path, 'rb') as f:
                 video_reader = VideoReader(f)
             video_length = len(video_reader)

@@ -571,9 +571,6 @@ def parse_args():
         ),
     )
     
-    # noise offset?::: #TODO HERE
-    parser.add_argument("--noise_offset", type=float, default=0, help="The scale of noise offset.")
-    
     # validations every 5 Epochs
     parser.add_argument(
         "--validation_epochs",
@@ -582,16 +579,6 @@ def parse_args():
         help="Run validation every X epochs.",
     )
     
-    parser.add_argument(
-        "--tracker_project_name",
-        type=str,
-        default="text2image-fine-tune",
-        help=(
-            "The `project_name` argument passed to Accelerator.init_trackers for"
-            " more information see https://huggingface.co/docs/accelerate/v0.17.0/en/package_reference/accelerator#accelerate.Accelerator"
-        ),
-    )
-
     parser.add_argument(
         "--validation_ref1",
         type=str,
@@ -628,30 +615,7 @@ def parse_args():
             " `--validation_image` that will be used with all `--validation_prompt`s."
         ),
     )
-    parser.add_argument(
-        "--validation_point_ref",
-        type=str,
-        default=None,
-        nargs="+",
-        help=(
-            "A set of paths to the controlnet conditioning image be evaluated every `--validation_steps`"
-            " and logged to `--report_to`. Provide either a matching number of `--validation_prompt`s, a"
-            " a single `--validation_prompt` to be used with all `--validation_image`s, or a single"
-            " `--validation_image` that will be used with all `--validation_prompt`s."
-        ),
-    )
-    parser.add_argument(
-        "--validation_point_main",
-        type=str,
-        default=None,
-        nargs="+",
-        help=(
-            "A set of paths to the controlnet conditioning image be evaluated every `--validation_steps`"
-            " and logged to `--report_to`. Provide either a matching number of `--validation_prompt`s, a"
-            " a single `--validation_prompt` to be used with all `--validation_image`s, or a single"
-            " `--validation_image` that will be used with all `--validation_prompt`s."
-        ),
-    )
+
     parser.add_argument(
         "--setting_config",
         type=str,
@@ -771,9 +735,7 @@ def main():
     with ContextManagers(deepspeed_zero_init_disabled_context_manager()):
 
         vae = AutoencoderKL.from_pretrained(
-            # args.pretrained_model_name_or_path,
             "../ckpt/sd-vae-ft-mse",
-            # subfolder='vae',
             use_safetensors=False
         )
 
@@ -831,7 +793,7 @@ def main():
                 print(f"load controlnet from {controlnet_sketch_ckpt_path} success !!!")
             else:
                 import json
-                with open('./ckpt/controlnet/config.json', "r") as f:
+                with open('../ckpt/controlnet/config.json', "r") as f:
                     config = json.load(f)
                 controlnet_multi = ControlNetModel(**config)
 
@@ -991,7 +953,7 @@ def main():
         args.mixed_precision = accelerator.mixed_precision
 
     # weight_dtype = torch.float32
-    print(weight_dtype)
+    # print(weight_dtype)
     # Move text_encode and vae to gpu and cast to weight_dtype
     vae.to(accelerator.device, dtype=weight_dtype)
 

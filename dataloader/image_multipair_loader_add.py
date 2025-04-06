@@ -32,7 +32,7 @@ class PairDataset(Dataset):
         folder = Path(data_dir)
         self.frame_folder = [os.path.join(data_dir,str(x.name)) for x in folder.iterdir() if x.is_dir()]
         self.length = len(self.frame_folder)
-        # print(f" data from -> {data_dir}, load video total length: {self.length}")
+        print(f" data from -> {data_dir}, load video total length: {self.length}")
 
         # coconut dataset
         import json
@@ -40,7 +40,7 @@ class PairDataset(Dataset):
         self.dataroot = './data/coconut_dataset/coco'
         
         self.dataType = 'train2017'
-        # 标注文件路径
+       
         annFile = os.path.join(self.dataroot, 'annotations', f'instances_{self.dataType}.json')
         self.img_dir = f"{self.dataroot}/train2017"
         self.coco = COCO(annFile)
@@ -77,13 +77,13 @@ class PairDataset(Dataset):
         prob = random.uniform(0, 1)
         if prob < 0.8:
             extract = True
-            self.anime_data += 1
             curr_anno = self.frame_folder[index]  # dataset dir name
             if not os.path.exists(curr_anno + "/masks"):
                 return None
-            # modify: ref file name
+            
             base_name = curr_anno.split("/")[-1]
             img1_path = curr_anno + f"/{base_name}.jpg"
+
             if os.path.exists(img1_path):
                 img2_path = img1_path
             else:
@@ -93,7 +93,6 @@ class PairDataset(Dataset):
             sample = {}
             sample['img2'] = np.array(Image.open(img2_path).convert('RGB'))
 
-            # 初始化相关数据结构
             mul_pixel_values = []
             mul_ctrl_img = []
             mul_patches = []
@@ -154,7 +153,6 @@ class PairDataset(Dataset):
                                 local_ins = np.zeros_like(local_img, dtype=np.uint8)
                                 local_ins[y_start:y_start + target_size[0], x_start:x_start + target_size[1], :] = resized_instance
                                 
-                                # local_img = local_img + local_ins
                                 local_img = cv2.add(local_img, local_ins)
                             
                                 placed = True
@@ -209,9 +207,7 @@ class PairDataset(Dataset):
                 use_patch = 1
                 if use_patch:
                     sel_ins = []
-                    img_np_raw = np.array(img, dtype=np.uint8)  
-                    mask_np_raw = np.array(img_mask, dtype=np.uint8)
-
+            
                     all_ins = ins_rgb_id 
                     
                     for id_ins, curr_ins in enumerate(all_ins):
@@ -270,7 +266,6 @@ class PairDataset(Dataset):
                 print(e)
                 return None
        
-
         else: # coconut dataset
             try:
                 self.coconut_data += 1
