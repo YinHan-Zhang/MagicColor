@@ -35,6 +35,13 @@ Install Grounded-Segment-Anything see here -> [install guideline](https://github
 
     mv automatic_label.py Grounded-Segment-Anything/
 
+    cd Grounded-Segment-Anything
+
+    mkdir ckpt  
+    
+    # move sam/ram/groundingdino weight to ckpt dir
+
+
 Then, you can train the model on your dataset:
 
     python automatic_label.py \
@@ -93,10 +100,10 @@ Dataset Format:
     data/
     ├── dir_name
         ├──masks/
-            ├── mask_1.png
+            ├── mask_1.png # reference mask
             ├── mask_2.png
             ├── ...
-            ├── mask_n.jpg
+            ├── mask_n.png
 
         ├── dir_name_1.jpg # reference instance
         ├── dir_name_2.jpg
