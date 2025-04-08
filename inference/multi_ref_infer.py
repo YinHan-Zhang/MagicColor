@@ -176,6 +176,12 @@ def parse_args():
         default="",
         help="inference data dir"
     )
+    parser.add_argument(
+        "--vae_path",
+        type=str,
+        default="",
+        help="inference data dir"
+    )
     
     args = parser.parse_args()
     
@@ -245,9 +251,9 @@ if __name__=="__main__":
         raise NotImplementedError
     else:
         vae = AutoencoderKL.from_pretrained(
-            "ckpt/sd-vae-ft-mse",
+            args.vae_path,
             use_safetensors=False
-            )
+        )
         scheduler = DDIMScheduler.from_pretrained(args.pretrained_model_name_or_path,subfolder='scheduler', use_safetensors=False)
         denoising_unet = UNet2DConditionModel.from_pretrained(
             args.pretrained_model_name_or_path,
@@ -403,12 +409,12 @@ if __name__=="__main__":
             
             images_tensor = []
             for image_name, image in to_save_dict.items():
-                if image_name in ['ref1','raw2','edge2','pred2']:
-                    image_save_path = os.path.join(data_dir[i]+f"/00", f'{image_name}.png')
+                if image_name in ['ref1','pred2']:
+                    image_save_path = os.path.join(data_dir[i]+f"/result", f'{image_name}.png')
                     if os.path.exists(image_save_path):
                         logging.warning(
                             f"Existing file: '{image_save_path}' will be overwritten"
                         )
                     print(f"img save in {image_save_path}")
-                    os.makedirs(data_dir[i]+f"/00", exist_ok=True)
+                    os.makedirs(data_dir[i]+f"/result", exist_ok=True)
                     image.save(image_save_path)

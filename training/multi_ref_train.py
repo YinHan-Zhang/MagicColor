@@ -343,7 +343,13 @@ def parse_args():
         required=False,
         help="Path to pretrained model or model identifier from huggingface.co/models.",
     )
-
+    parser.add_argument(
+        "--vae_path",
+        type=str,
+        default=None,
+        required=False,
+        help="Path to pretrained model or model identifier from huggingface.co/models.",
+    )
     parser.add_argument(
         "--dataset_name",
         type=str,
@@ -735,7 +741,7 @@ def main():
     with ContextManagers(deepspeed_zero_init_disabled_context_manager()):
 
         vae = AutoencoderKL.from_pretrained(
-            "../ckpt/sd-vae-ft-mse",
+            args.vae_path,
             use_safetensors=False
         )
 

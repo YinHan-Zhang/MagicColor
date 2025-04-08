@@ -8,7 +8,7 @@ We present MagicColor, a diffusion-based framework for multi-instance sketch col
 ![](./asset/intro.jpg)
 
 ### Gallery
-Given a set of references and corresponding line art images, our approach enables coloring sketches while maintaining consistency across multiple instances. Compared to traditional methods, our approach significantly improves coloring efficiency.
+Given a set of reference instances and corresponding line art images, our approach enables coloring sketches while maintaining consistency across multiple instances. Compared to traditional methods, our approach significantly improves coloring efficiency.
 
 ![](./asset/teaser.jpg)
 
@@ -17,7 +17,7 @@ Given a set of references and corresponding line art images, our approach enable
 
 ### Environment
 
-    conda create -n MagicColor python=3.10  
+    conda create -n MagicColor python=3.8
 
     pip install -r requirements.txt
 
@@ -53,6 +53,40 @@ Then, you can train the model on your dataset:
 
     bash download.sh
 
+### Dataset(optional)
+
+- [Sakuga Dataset](https://github.com/KytraScript/SakugaDataset)
+- [ATD-12K](https://github.com/lisiyao21/AnimeInterp)
+- [Anime-sketch-colorization-pair](https://www.kaggle.com/datasets/ktaebum/anime-sketch-colorization-pair)
+
+### Train
+Dataset Format:
+
+    data/
+    ├── dir_name1
+        ├──masks/
+            ├── mask_1.png # instance mask
+            ├── mask_2.png
+            ├── ...
+            ├── mask_n.png
+
+        ├── dir_name1.jpg # origin image 1
+
+    ├── dir_name2
+        ├──masks/
+            ├── mask_1.png # instance mask
+            ├── mask_2.png
+            ├── ...
+            ├── mask_n.png
+
+        ├── dir_name2.jpg # origin image 2
+
+then,
+
+    cd scripts
+
+    bash multi_ref_train.sh
+
 ### Inference
 Dataset Format:
 
@@ -68,6 +102,7 @@ Dataset Format:
         ├── dir_name_2.jpg
         ├── ...
         ├── dir_name_n.jpg
+
         ├── dir_name.jpg  # sketch image
 
 then, 
@@ -75,34 +110,6 @@ then,
     cd scripts
     
     bash multi_ref_infer.sh # modify input_data_dir
-
-### Train
-Dataset Format:
-
-    data/
-    ├── dir_name1
-        ├──masks/
-            ├── mask_1.png # instance mask
-            ├── mask_2.png
-            ├── ...
-            ├── mask_n.jpg
-
-        ├── dir_name1.jpg # origin image 1
-
-    ├── dir_name2
-        ├──masks/
-            ├── mask_1.png # instance mask
-            ├── mask_2.png
-            ├── ...
-            ├── mask_n.jpg
-
-        ├── dir_name2.jpg # origin image 2
-
-then,
-
-    cd scripts
-
-    bash multi_ref_train.sh
 
 
 ### Interface
@@ -118,4 +125,7 @@ Due to the limitation of computing resources and data, the amount of data for mo
 
 ## Acknowledgement
 
-Thanks for the reference contributions of these works: Manganijia, ColorizeDiffusion, DreamBooth etc.
+Thanks for the reference contributions of these works: 
+- MangaNinjia
+- ColorizeDiffusion
+- DreamBooth

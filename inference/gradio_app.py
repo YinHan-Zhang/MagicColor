@@ -237,7 +237,7 @@ def run_inference(sketch_image: Image.Image, ref_images: List[Image.Image], args
     to_save_dict = pipe_outs[0].to_save_dict
     os.makedirs("./user_input/infer_res", exist_ok=True)
     for image_name, image in to_save_dict.items():
-        if image_name in ['ref1','raw2','edge2','pred2']:
+        if image_name in ['ref1','pred2']:
             image_save_path = os.path.join(f"./user_input/infer_res", f'{image_name}.jpg')
             image.save(image_save_path)
     return result_image

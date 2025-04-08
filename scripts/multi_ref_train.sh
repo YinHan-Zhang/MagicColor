@@ -7,6 +7,7 @@ refnet_clip_vision_encoder_path='../ckpt/clip-vit-large-patch14'
 controlnet_clip_vision_encoder_path='../ckpt/clip-vit-large-patch14'
 controlnet_model_name_or_path='../ckpt/controlnet_lineart'
 annotator_ckpts_path='../ckpt/Annotators'
+vae_path="../ckpt/sd-vae-ft-mse"
 checkpoint_path=""
 
 # dataset config
@@ -42,6 +43,7 @@ CUDA_VISIBLE_DEVICES=0,1 accelerate launch --multi_gpu --mixed_precision=no --ma
                   --annotator_ckpts_path $annotator_ckpts_path \
                   --checkpoint_path $checkpoint_path \
                   --controlnet_ckpt_path $checkpoint_path \
+                  --vae_path $vae_path \
                   --dataset_name $dataset_name \
                   --setting_config $config \
                   --trainlist $trainlist \
