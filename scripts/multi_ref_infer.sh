@@ -6,13 +6,13 @@ refnet_clip_vision_encoder_path='../ckpt/clip-vit-large-patch14'
 controlnet_clip_vision_encoder_path='../ckpt/clip-vit-large-patch14'
 controlnet_model_name_or_path='../ckpt/controlnet_lineart'
 annotator_ckpts_path='../ckpt/Annotators'
-checkpoint_path="../ckpt/checkpoint-090000" # coming soon ...
+checkpoint_path="../ckpt/MagicColor"
 vae_path="../ckpt/sd-vae-ft-mse"
 
 
 #inference config
 config='dafault'
-input_data_dir="" # inference input data dir
+input_data_dir="../data/test1" # inference input data dir
 
 CUDA_VISIBLE_DEVICES=0 accelerate launch --main_process_port 0 --mixed_precision=no multi_ref_infer.py  \
                   --pretrained_model_name_or_path $pretrained_model_name_or_path \
