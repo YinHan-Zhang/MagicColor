@@ -20,7 +20,6 @@ from diffusers.models.embeddings import (
     ImageHintTimeEmbedding,
     ImageProjection,
     ImageTimeEmbedding,
-    # PositionNet,
     TextImageProjection,
     TextImageTimeEmbedding,
     TextTimeEmbedding,
@@ -663,12 +662,7 @@ class RefUNet2DConditionModel(ModelMixin, ConfigMixin, UNet2DConditionLoadersMix
                 positive_len = cross_attention_dim[0]
 
             feature_type = "text-only" if attention_type == "gated" else "text-image"
-            # self.position_net = PositionNet(
-            #     positive_len=positive_len,
-            #     out_dim=cross_attention_dim,
-            #     feature_type=feature_type,
-            # )
-
+            
     @property
     def attn_processors(self) -> Dict[str, AttentionProcessor]:
         r"""
@@ -1295,29 +1289,15 @@ class RefUNet2DConditionModel(ModelMixin, ConfigMixin, UNet2DConditionLoadersMix
                     upsample_size=upsample_size,
                     scale=lora_scale,
                 )
-            # extract feature
+            # extract unet latent layer feature for color matching
             if i in up_ft_indices:
                 fea = sample.detach()
-                # conv_layer = nn.Conv2d(
-                #     in_channels = 320,
-                #     out_channels = 4,
-                #     kernel_size=1,
-                #     stride=1
-                # ).to('cuda')
-                # fea = conv_layer(fea)
-                # pool_layer = nn.MaxPool2d(kernel_size=1, stride=1).to('cuda')
-                # fea = pool_layer(fea)
                 up_ft[i] = fea
 
          # 5.5 add feature
         output = {}
         output['up_ft'] = up_ft
 
-        # # 6. post-process
-        # if self.conv_norm_out:
-        #     sample = self.conv_norm_out(sample)
-        #     sample = self.conv_act(sample)
-        # sample = self.conv_out(sample)
 
         if USE_PEFT_BACKEND:
             # remove `lora_scale` from each PEFT layer

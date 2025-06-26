@@ -1,4 +1,8 @@
 # MagicColor: Multi-Instance Sketch Colorization
+[![Website](asset/badge-website.svg)](https://yinhan-zhang.github.io/color/)
+[![Paper](https://img.shields.io/badge/arXiv-PDF-b31b1b)](https://arxiv.org/abs/2503.16948)
+[![License](https://img.shields.io/badge/License-CC%20BY--NC%204.0-929292)](https://creativecommons.org/licenses/by-nc/4.0/)
+
 ![](./asset/logo.png)
 
 
@@ -60,11 +64,35 @@ Then, you can train the model on your dataset:
 
     bash download.sh
 
+* You could download our [model]() from HuggingFace (coming soon ...)
+
+The downloaded checkpoint directory should have the following structure:
+```
+-- ckpt
+    |-- stable-diffusion-v1-5
+    |-- clip-vit-large-patch14
+    |-- controlnet
+        |-- config.json
+    |-- Annotators
+        |-- sk_model.pth
+    |-- controlnet_lineart
+        |-- diffusion_pytorch_model.safetensors
+    |-- MagicColor
+        |-- controlnet_multi
+            |-- diffusion_pytorch_model.safetensors
+        |-- controlnet_sketch
+            |-- diffusion_pytorch_model.safetensors
+        |-- denoising_unet.pth
+        |-- reference_unet.pth
+```
+- move dino checkpoint 
+```mv dinov2_vitl14_reg4_pretrain.pth ./src/models```
+
 ### Dataset(optional)
 
-- [Sakuga Dataset](https://github.com/KytraScript/SakugaDataset)
-- [ATD-12K](https://github.com/lisiyao21/AnimeInterp)
-- [Anime-sketch-colorization-pair](https://www.kaggle.com/datasets/ktaebum/anime-sketch-colorization-pair)
+- [Sakuga Dataset](https://github.com/KytraScript/SakugaDataset): Large scale Animation Dataset
+- [ATD-12K](https://github.com/lisiyao21/AnimeInterp): image triple pair data
+- [Anime-sketch-colorization-pair](https://www.kaggle.com/datasets/ktaebum/anime-sketch-colorization-pair): sketch-image pair data
 
 ### Train
 Dataset Format:

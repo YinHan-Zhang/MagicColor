@@ -299,7 +299,7 @@ if __name__=="__main__":
         # load controlnet
         if not os.path.exists(args.checkpoint_path):
             import json
-            with open('/ckpt/controlnet/config.json', "r") as f:
+            with open('../ckpt/controlnet/config.json', "r") as f: # init model config
                 config = json.load(f)
             controlnet_multi = ControlNetModel(**config)
 

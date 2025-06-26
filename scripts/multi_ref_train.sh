@@ -2,21 +2,20 @@ cd ..
 cd training
 
 # accelerate config default
-pretrained_model_name_or_path='../ckptstable-diffusion-v1-5'
+pretrained_model_name_or_path='../ckpt/stable-diffusion-v1-5'
 refnet_clip_vision_encoder_path='../ckpt/clip-vit-large-patch14'
 controlnet_clip_vision_encoder_path='../ckpt/clip-vit-large-patch14'
 controlnet_model_name_or_path='../ckpt/controlnet_lineart'
 annotator_ckpts_path='../ckpt/Annotators'
-vae_path="../ckpt/sd-vae-ft-mse"
-checkpoint_path=""
+vae_path="../ckpt/sd-vae-ft-mse" # optional: update vae 
+checkpoint_path="../ckpt/MagicColor" # optional: checkpoint
 
 # dataset config
-root_path=''
+root_path='' # dataset root path
 dataset_name='multi'
-trainlist=''
 height=512 
 width=512 
-stride=24 # clip length
+stride=24 # video clip frame length
 
 # training config
 output_root='../outputs'
@@ -29,7 +28,6 @@ lr_warmup_steps=10
 dataloader_num_workers=8
 resume_from_checkpoint='latest'
 
-vallist=""
 validation_steps=2000
 checkpointing_steps=2000
 checkpoints_total_limit=20
@@ -46,8 +44,6 @@ CUDA_VISIBLE_DEVICES=0,1 accelerate launch --multi_gpu --mixed_precision=no --ma
                   --vae_path $vae_path \
                   --dataset_name $dataset_name \
                   --setting_config $config \
-                  --trainlist $trainlist \
-                  --vallist $vallist \
                   --dataset_path $root_path \
                   --height $height --width $width --stride $stride \
                   --output_root $output_root \

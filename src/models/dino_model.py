@@ -10,7 +10,7 @@ import sys
 
 from .dinov2 import hubconf
 
-DINOv2_weight_path = 'dinov2_vitl14_reg4_pretrain.pth'
+DINOv2_weight_path = './dinov2_vitl14_reg4_pretrain.pth'
 
 class FrozenDinoV2Encoder(nn.Module):
     """

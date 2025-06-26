@@ -36,7 +36,6 @@ class PairDataset(Dataset):
 
         # coconut dataset
         import json
-        self.coco_dataset = []
         self.dataroot = './data/coconut_dataset/coco'
         
         self.dataType = 'train2017'
@@ -70,7 +69,7 @@ class PairDataset(Dataset):
             ]
         )
         self.image_transforms = T.Compose([T.ToTensor()])
-      
+        
 
     def get_data_dict(self, index):
 
@@ -87,8 +86,8 @@ class PairDataset(Dataset):
             if os.path.exists(img1_path):
                 img2_path = img1_path
             else:
-                img1_path = curr_anno + f"/frame1.png" # ref1
-                img2_path = curr_anno + f"/frame3.png" # gt2
+                img1_path = curr_anno + f"/frame1.png" # ref image
+                img2_path = curr_anno + f"/frame3.png" # gt -> sketch image
             
             sample = {}
             sample['img2'] = np.array(Image.open(img2_path).convert('RGB'))
@@ -102,8 +101,8 @@ class PairDataset(Dataset):
             curr_height = self.height
             curr_width = self.width
 
-            img = np.zeros((curr_height, curr_width, 3), dtype=np.uint8)  # 初始化黑色图像
-            local_img = np.zeros((curr_height, curr_width, 3), dtype=np.uint8)  # 初始化白色图像
+            img = np.zeros((curr_height, curr_width, 3), dtype=np.uint8) 
+            local_img = np.zeros((curr_height, curr_width, 3), dtype=np.uint8)
             img_mask = np.zeros_like(np.array(img, dtype=np.uint8))[:, :, 0]
 
             ins_rgb = []  # rgb img
@@ -171,8 +170,7 @@ class PairDataset(Dataset):
                     ins_mask_expanded = np.repeat(ins_mask_expanded, ins_img.shape[-1], axis=-1)
 
                     ori_instance = ins_img * ins_mask_expanded
-                   
-
+                
                     img_mask[ins_mask!= 0] = p_id + 1 
 
 
@@ -268,7 +266,6 @@ class PairDataset(Dataset):
        
         else: # coconut dataset
             try:
-                self.coconut_data += 1
                 imgIds = self.coco.getImgIds()
                 random_img_id = random.choice(imgIds)
                 img_id = random_img_id 

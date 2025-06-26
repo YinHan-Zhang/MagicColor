@@ -20,7 +20,6 @@ from diffusers.models.embeddings import (
     ImageHintTimeEmbedding,
     ImageProjection,
     ImageTimeEmbedding,
-    # PositionNet,
     TextImageProjection,
     TextImageTimeEmbedding,
     TextTimeEmbedding,
@@ -1031,9 +1030,9 @@ class UNet2DConditionModel(ModelMixin, ConfigMixin, UNet2DConditionLoadersMixin)
             encoder_hidden_states = (encoder_hidden_states, image_embeds)
         return encoder_hidden_states
     
-    def feature_transfer(self, src_ft, trg_ft):
+    def color_matching(self, src_ft, trg_ft):
         """
-        func desc: transfer src_ft to trg_ft
+        color matching method : transfer src_ft to trg_ft
         args:
             src_ft: source feature,size = [1,320,64,64]
             trg_ft: target feature,size = [1,320,64,64]
@@ -1055,7 +1054,7 @@ class UNet2DConditionModel(ModelMixin, ConfigMixin, UNet2DConditionLoadersMixin)
             grid = torch.stack((grid_x, grid_y), -1)
             if homogeneous:
                 grid = torch.cat([grid, torch.ones_like(grid[..., :1])], dim=-1)
-            return grid  # [h, w, 2 or 3]
+            return grid 
 
         def normalize_coords(coords, h, w, no_shift=False):
             assert coords.shape[-1] == 2
@@ -1073,12 +1072,9 @@ class UNet2DConditionModel(ModelMixin, ConfigMixin, UNet2DConditionLoadersMixin)
 
         grid_src = gen_grid(h_src, w_src, device='cuda')
         grid_trg = gen_grid(h_trg, w_trg, device='cuda')
-        # 这里假设了一个全为1的sticker_mask，以确定从src_ft中选取哪些特征点进行迁移操作
+        
+        # a sticker mask with all values of 1 is assumed to determine which feature points are selected from the src ft for the migration operation
         sticker_mask = torch.ones_like(src_ft[0, 0])
-        # img_path="/hpc2hdd/home/yzhang472/work/MagicTailor/Grounded-Segment-Anything/outputs/ref/bw_mask.jpg"  # 替换为实际的图像路径
-        # gray_image = Image.open(img_path)
-        # transform = transforms.ToTensor()
-        # sticker_mask = transform(gray_image).squeeze()
 
         coord_src = grid_src[sticker_mask > 0]
         coord_src = coord_src[torch.randperm(len(coord_src))][:1000]
@@ -1370,37 +1366,19 @@ class UNet2DConditionModel(ModelMixin, ConfigMixin, UNet2DConditionLoadersMixin)
                     res_hidden_states_tuple=res_samples,
                     upsample_size=upsample_size,
                 )
-            
+            # color matching process ...
             if i in up_ft_indices:
                 # extract feature
                 fea = sample.detach()
-                # conv_layer = nn.Conv2d( # channel format for up_ft_indices=3
-                #     in_channels = 320,
-                #     out_channels = 4,
-                #     kernel_size=1,
-                #     stride=1
-                # ).to('cuda')
-                # fea = conv_layer(fea)
-                # pool_layer = nn.MaxPool2d(kernel_size=1, stride=1).to('cuda')
-                # fea = pool_layer(fea)
                 up_ft[i] = fea
                 if ref_ft is not None:
                     # replace feature
                     prev = sample.shape[0]
-                    # print(f"before -> sample: {sample.shape}")
                     sample = sample.mean(0, keepdim=True) # 1,c,h,w
-                    # print(f"{sample.shape}, {ref_ft.shape}")
-                    assert sample.shape == ref_ft.shape, "sample and ref_ft tensor shape not match."
-                    sample = self.feature_transfer(ref_ft, sample)
-                    # print(f"mid -> {sample.shape}")
+                    
+                    assert sample.shape == ref_ft.shape, "taregt_feature and reference_feature tensor shape not match."
+                    sample = self.color_matching(ref_ft, sample) 
                     sample = sample.repeat(prev , 1 ,1 ,1)
-                    # print(f"after -> {sample.shape}")
-                
-                
-
-        # # 5.5 add feature
-        # output = {}
-        # output['up_ft'] = up_ft
 
         # 6. post-process
         if self.conv_norm_out:

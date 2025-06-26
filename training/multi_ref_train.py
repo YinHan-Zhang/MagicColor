@@ -1,6 +1,7 @@
 import sys
-sys.path.append("../training")
-sys.path.append("../src")
+workspace = os.path.abspath('../')
+sys.path.append(f"{workspace}/training")
+sys.path.append(f"{workspace}/src")
 import argparse
 import math
 import random
@@ -197,8 +198,7 @@ class Net(nn.Module):
         controlnet: MultiControlNetModel,
         denoising_unet: UNet2DConditionModel,
         reference_control_writer,
-        reference_control_reader,
-        point_net = None
+        reference_control_reader
     ):
         super().__init__()
         self.reference_unet = reference_unet
@@ -206,7 +206,6 @@ class Net(nn.Module):
         self.denoising_unet = denoising_unet
         self.reference_control_writer = reference_control_writer
         self.reference_control_reader = reference_control_reader
-        self.point_net=point_net
 
     def forward(
         self,
@@ -236,7 +235,6 @@ class Net(nn.Module):
                 ref_ft = ref_ft_all['up_ft'][up_ft_index] 
                 ref_ft = ref_ft.mean(0, keepdim=True)
                 
-               
                 self.reference_control_reader.update(self.reference_control_writer)
                 
         if self.controlnet:
@@ -778,7 +776,7 @@ def main():
             refnet_image_enc = None
 
         if in_channels_controlnet:
-            # load model weight
+            # load controlnet model weight
             if args.controlnet_ckpt_path:
                 controlnet_sketch_ckpt_path = args.controlnet_ckpt_path + f"/controlnet_sketch"
                 controlnet_multi_ckpt_path = args.controlnet_ckpt_path + f"/controlnet_multi"
@@ -799,7 +797,7 @@ def main():
                 print(f"load controlnet from {controlnet_sketch_ckpt_path} success !!!")
             else:
                 import json
-                with open('../ckpt/controlnet/config.json', "r") as f:
+                with open('../ckpt/controlnet/config.json', "r") as f: # init instance controlnet
                     config = json.load(f)
                 controlnet_multi = ControlNetModel(**config)
 
@@ -1067,7 +1065,7 @@ def main():
                 prompt_fea = torch.zeros((*batch["ctrl_img"][0].shape, ctrl_channel)).to(
                     device, dtype=weight_dtype
                 )
-
+                # latent control alignment
                 for curr_b, curr_ins_img in enumerate(batch["patches"]):
                     curr_ins_id, curr_ins_patch = curr_ins_img[0], curr_ins_img[1].to(prompt_fea)
                     
@@ -1135,7 +1133,6 @@ def main():
                                 curr_box[1] : curr_box[3], curr_box[0] : curr_box[2]
                             ][small_mask] = warp_fea[small_mask]
 
-             
                 batch["conditioning_pixel_values"] = prompt_fea.permute(0, 3, 1, 2)
 
                 controlnet_image = batch["conditioning_pixel_values"].to(
@@ -1202,7 +1199,6 @@ def main():
                     else:
                         controlnet_image_prompt_embeds = None
                 else:
-                   
                     clip_img = batch["clip_images"]
                     def img2embeds(clip_image, image_enc):
                         clip_image_embeds = image_enc(
@@ -1374,7 +1370,6 @@ def main():
                                         global_step,
                                         total_limit=args.checkpoints_total_limit,
                                     )
-
                                 save_checkpoint(
                                     unwrap_net.denoising_unet,
                                     output_dir,

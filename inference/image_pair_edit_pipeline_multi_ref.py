@@ -456,7 +456,7 @@ class ImagePairEditPipeline(DiffusionPipeline):
                         encoder_hidden_states=refnet_encoder_hidden_states,
                         return_dict=True,
                     ).output
-                    
+                    # extract unet latent layer feature
                     up_ft_index = 1
                     ref_ft = ref_ft_all['up_ft'][up_ft_index] 
                     ref_ft = ref_ft.mean(0, keepdim=True) 

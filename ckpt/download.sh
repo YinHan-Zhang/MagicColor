@@ -12,9 +12,10 @@ echo "download clip success!"
 huggingface-cli download --resume-download stable-diffusion-v1-5/stable-diffusion-v1-5 --local-dir ./stable-diffusion-v1-5
 echo "download stable-diffusion-v1-5 success!"
 
-huggingface-cli download --resume-download madebyollin/sdxl-vae-fp16-fix --local-dir ./sdxl-vae-fp16-fix 
-echo "download stable-diffusion-v1-5 success!"
+huggingface-cli download --resume-download stabilityai/sd-vae-ft-mse --local-dir ./sd-vae-ft-mse
+echo "download sd-vae-ft-mse!"
 
 wget https://dl.fbaipublicfiles.com/dinov2/dinov2_vitl14/dinov2_vitl14_reg4_pretrain.pth
 echo "download Dinov2 success!"
 
+# MagicColor checkpoint is coming soon ...
