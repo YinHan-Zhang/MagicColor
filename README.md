@@ -1,6 +1,7 @@
 # MagicColor: Multi-Instance Sketch Colorization
 [![Website](asset/badge-website.svg)](https://yinhan-zhang.github.io/color/)
 [![Paper](https://img.shields.io/badge/arXiv-PDF-b31b1b)](https://arxiv.org/abs/2503.16948)
+<a href="https://huggingface.co/yinhan/MagicColor"><img src='https://img.shields.io/badge/Hugging Face-ckpts-orange?style=flat&logo=HuggingFace&logoColor=orange' alt='huggingface'></a>&nbsp;
 [![License](https://img.shields.io/badge/License-CC%20BY--NC%204.0-929292)](https://creativecommons.org/licenses/by-nc/4.0/)
 
 ![](./asset/logo.png)
