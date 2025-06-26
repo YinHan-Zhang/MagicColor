@@ -4,7 +4,7 @@ huggingface-cli download --resume-download lllyasviel/Annotators --local-dir ./A
 echo "download Annotators success!"
 
 wget https://hf-mirror.com/lllyasviel/control_v11p_sd15s2_lineart_anime/resolve/main/diffusion_pytorch_model.bin
-echo "download clip success!"
+echo "download controlnet success!"
 
 huggingface-cli download --resume-download openai/clip-vit-large-patch14 --local-dir ./clip-vit-large-patch14
 echo "download clip success!"
@@ -18,4 +18,5 @@ echo "download sd-vae-ft-mse!"
 wget https://dl.fbaipublicfiles.com/dinov2/dinov2_vitl14/dinov2_vitl14_reg4_pretrain.pth
 echo "download Dinov2 success!"
 
-# MagicColor checkpoint is coming soon ...
+huggingface-cli download --resume-download yinhan/MagicColor --local-dir ./MagicColor
+echo "download MagicColor success!"

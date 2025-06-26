@@ -357,7 +357,7 @@ if __name__ == "__main__":
     args.controlnet_clip_vision_encoder_path = '../ckpt/clip-vit-large-patch14'
     args.controlnet_model_name_or_path = '../ckpt/controlnet_lineart'
     args.annotator_ckpts_path = '../ckpt/Annotators'
-    args.checkpoint_path = "../ckpt/checkpoint-090000" 
+    args.checkpoint_path = "../ckpt/MagicColor" 
     args.output_dir = "./user_input/output"
     args.denoising_steps = 20
     args.processing_res = 512
@@ -373,7 +373,7 @@ if __name__ == "__main__":
     with gr.Blocks(css=".gradio-container {max-width: 1200px; margin: 0 auto;}") as demo:
        
         gr.Markdown("# MagicColor: Multi-instance Sketch Colorization")
-        gr.Markdown("## User Guide: \n 1. Upload a sketch image \n 2. Click add reference (one or more images/instances) \n 3. Click generate result!")
+        gr.Markdown("## User Guide: \n 1. Upload a sketch(color) image \n 2. Click add reference (one or more images/instances) \n 3. Click generate result! \n 4. you can repeat reference instances to enhance colorization effect !!!")
        
         ref_count = gr.State(0)
 

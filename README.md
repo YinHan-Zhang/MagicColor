@@ -5,6 +5,9 @@
 
 ![](./asset/logo.png)
 
+# News
+- 2025-06-27 : release model weight ✅
+- 2025-03-24 : release code ✅
 
 ## Overview
 We present MagicColor, a diffusion-based framework for multi-instance sketch colorization. Previous methods can only achieve multi-instance sketch colorization step by step, which is time-consuming and inaccurate. In contrast, our method has the capability of coloring sketches while maintaining consistency, making multi-instance sketch colorization easier.
@@ -93,6 +96,10 @@ The downloaded checkpoint directory should have the following structure:
 - [Sakuga Dataset](https://github.com/KytraScript/SakugaDataset): Large scale Animation Dataset
 - [ATD-12K](https://github.com/lisiyao21/AnimeInterp): image triple pair data
 - [Anime-sketch-colorization-pair](https://www.kaggle.com/datasets/ktaebum/anime-sketch-colorization-pair): sketch-image pair data
+
+Due to the limitation of computing resources and data, the amount of data for model training is limited. If you are not satisfied with the colorization effect and have enough computing resources, you can train the model yourself based on provided checkpoint.
+
+- Comuputing resource needs: Training is available on ATX 4090 (bf16), and A100 80GB (fp32). 
 
 ### Train
 Dataset Format:
