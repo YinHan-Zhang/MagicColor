@@ -63,11 +63,9 @@ Then, you can train the model on your dataset:
         --iou_threshold 0.15 \
         --device "cuda"
 
-### Download pre-trained weight
+### Download pre-trained weights
 
     bash download.sh
-
-* You could download our [model]() from HuggingFace (coming soon ...)
 
 The downloaded checkpoint directory should have the following structure:
 ```
@@ -96,10 +94,11 @@ The downloaded checkpoint directory should have the following structure:
 - [Sakuga Dataset](https://github.com/KytraScript/SakugaDataset): Large scale Animation Dataset
 - [ATD-12K](https://github.com/lisiyao21/AnimeInterp): image triple pair data
 - [Anime-sketch-colorization-pair](https://www.kaggle.com/datasets/ktaebum/anime-sketch-colorization-pair): sketch-image pair data
+- [Coconut dataset](https://www.kaggle.com/datasets/xueqingdeng/coconut): Due to the difficulty in collecting anime annotation data, we borrowed the annotation segmentation data of coconut as auxiliary training data
 
-Due to the limitation of computing resources and data, the amount of data for model training is limited. If you are not satisfied with the colorization effect and have enough computing resources, you can train the model yourself based on provided checkpoint.
+Due to the limitations of computing resources and data, the amount of animation data for model training is limited. If you are not satisfied with the colorization effect and have enough computing resources, you can train the model yourself based on the provided checkpoint.
 
-- Comuputing resource needs: Training is available on ATX 4090 (bf16), and A100 80GB (fp32). 
+- Computing resource needs: Training is available on RTX 4090 (bf16) and A100 80GB (fp32).
 
 ### Train
 Dataset Format:
@@ -163,7 +162,7 @@ run the script:
 
 ## Limitation
 
-Due to the limitation of computing resources and data, the amount of data for model training is limited. If you have enough computing resources, you can train the model yourself.
+Due to the limitations of computing resources and data, the amount of data for model training is limited. If you have enough computing resources, you can train the model yourself.
 
 ## Acknowledgement
 
