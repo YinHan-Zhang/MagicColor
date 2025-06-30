@@ -10,13 +10,13 @@ import sys
 
 from .dinov2 import hubconf
 
-DINOv2_weight_path = './dinov2_vitl14_reg4_pretrain.pth'
+# DINOv2_weight_path = 'dinov2_vitl14_reg4_pretrain.pth'
 
 class FrozenDinoV2Encoder(nn.Module):
     """
     Uses the DINOv2 encoder for image
     """
-    def __init__(self, device="cuda", freeze=True):
+    def __init__(self, DINOv2_weight_path, device="cuda", freeze=True):
         super().__init__()
 
         dinov2 = hubconf.dinov2_vitl14_reg(pretrained=False) 

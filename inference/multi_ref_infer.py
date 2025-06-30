@@ -8,6 +8,11 @@ from PIL import Image
 from tqdm.auto import tqdm
 
 import sys
+current_file_path = os.path.abspath(__file__)
+project_roots = [os.path.dirname(current_file_path), os.path.dirname(os.path.dirname(current_file_path)), os.path.dirname(os.path.dirname(os.path.dirname(current_file_path)))]
+for project_root in project_roots:
+    sys.path.insert(0, project_root) if project_root not in sys.path else None
+
 sys.path.append("../../MagicColor")
 sys.path.append("../training")
 sys.path.append("../src")
@@ -35,7 +40,7 @@ from models.unet_2d_condition import UNet2DConditionModel
 from models.refunet_2d_condition import RefUNet2DConditionModel
 from annotator.lineart_anime import LineartAnimeDetector
 
-from setting_config import setting_configs
+from setting_config import configs
 from torch.utils.data import DataLoader, Dataset
 from dataloader.inference_loader import InferPairDataset
 from dataloader.image_multipair_loader_add import PairDataset
@@ -89,34 +94,8 @@ def parse_args():
     )
 
     parser.add_argument(
-        "--validation_raw1",
-        type=str,
-        default=None,
-        help="valiadtion raw1 image",
-    )
-    parser.add_argument(
-        "--validation_ref1",
-        type=str,
-        default=None,
-        help="valiadtion ref1 image",
-    )
-    parser.add_argument(
-        "--validation_raw2",
-        type=str,
-        default=None,
-        help="valiadtion raw2 image",
-    )
-    parser.add_argument(
-        "--validation_edit2",
-        type=str,
-        default=None,
-        help="validation edit2 image",
-    )
-
-    parser.add_argument(
         "--output_dir", type=str, required=False, help="Output directory."
     )
-
     # inference setting
     parser.add_argument(
         "--denoising_steps",
@@ -337,7 +316,7 @@ if __name__=="__main__":
             print('controlnet loaded.')
 
         global dino_encoder
-        dino_encoder = FrozenDinoV2Encoder()
+        dino_encoder = FrozenDinoV2Encoder("../ckpt/dinov2_vitl14_reg4_pretrain.pth")
         dino_encoder.to(device, dtype)
         pipe = ImagePairEditPipeline(
             reference_unet=reference_unet,

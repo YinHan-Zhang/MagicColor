@@ -11,6 +11,10 @@ import cv2
 from tqdm import tqdm
 import shutil
 import sys
+current_file_path = os.path.abspath(__file__)
+project_roots = [os.path.dirname(current_file_path), os.path.dirname(os.path.dirname(current_file_path)), os.path.dirname(os.path.dirname(os.path.dirname(current_file_path)))]
+for project_root in project_roots:
+    sys.path.insert(0, project_root) if project_root not in sys.path else None
 sys.path.append("../Grounded-Segment-Anything")
 
 # Grounding DINO

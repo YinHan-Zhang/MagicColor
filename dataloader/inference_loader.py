@@ -29,9 +29,9 @@ class InferPairDataset(Dataset):
             transform=None,
         ):
 
-        self.frame_folder = data_dir
+        self.frame_folder = [data_dir]
         self.length = len(self.frame_folder)
-        print(f" data from -> {data_dir}, load video total length: {self.length}")
+        print(f" data from -> {data_dir}, load data total length: {self.length}")
 
         self.height = height
         self.width = width
@@ -61,13 +61,10 @@ class InferPairDataset(Dataset):
 
     def get_data_dict(self, index):
         curr_anno = self.frame_folder[index]  # dataset dir name
-
-        ## load origin data
-        base_name = curr_anno.split('/')[-1]
-        img1_path = curr_anno + f"/{base_name}.jpg" # ref1
+       
+        img1_path = curr_anno + f"/sketch.jpg"
         img2_path = curr_anno + f"/sketch.jpg"
-        if not os.path.exists(img2_path):
-            img2_path = img1_path
+       
         sample = {}
         sample['img2'] = np.array(Image.open(img2_path).convert('RGB'))
 
@@ -75,7 +72,7 @@ class InferPairDataset(Dataset):
         mul_ctrl_img = []
         mul_patches = []
 
-        file_name = curr_anno.split("/")[-1] + ".png"  # output file name
+        file_name = curr_anno + f"/sketch.jpg"
 
         curr_height = self.height
         curr_width = self.width
@@ -93,7 +90,7 @@ class InferPairDataset(Dataset):
         occupied_regions = []
         
         for p_id in range(ins_num):
-            instance_path = f"{curr_anno}/{base_name}_{p_id+1}.jpg"
+            instance_path = f"{curr_anno}/{p_id+1}.jpg"
             ins_img = np.array(Image.open(instance_path).convert("RGB").resize((curr_width, curr_height)), dtype=np.uint8) # load instance img
             mask_loca = curr_anno + f"/masks/mask_{p_id+1}.png"  # load mask img
             ins_mask = np.array(Image.open(mask_loca).resize((curr_width, curr_height)), dtype=np.uint8)

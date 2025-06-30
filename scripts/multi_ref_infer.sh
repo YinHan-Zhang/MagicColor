@@ -8,7 +8,7 @@ controlnet_model_name_or_path='../ckpt/controlnet_lineart'
 annotator_ckpts_path='../ckpt/Annotators'
 checkpoint_path="../ckpt/MagicColor"
 vae_path="../ckpt/sd-vae-ft-mse"
-
+output_dir="result"
 
 #inference config
 config='dafault'
@@ -29,4 +29,5 @@ CUDA_VISIBLE_DEVICES=0 accelerate launch --main_process_port 0 --mixed_precision
                   --output_processing_res \
                   --setting_config $config \
                   --batch_size 1 \
-                  --data_dir $input_data_dir
+                  --data_dir $input_data_dir \
+                  --guidance_scale 3.5 

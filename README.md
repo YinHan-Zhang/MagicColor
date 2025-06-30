@@ -81,14 +81,15 @@ The downloaded checkpoint directory should have the following structure:
         |-- diffusion_pytorch_model.safetensors
     |-- MagicColor
         |-- controlnet_multi
+            |-- config.json
             |-- diffusion_pytorch_model.safetensors
         |-- controlnet_sketch
+            |-- config.json
             |-- diffusion_pytorch_model.safetensors
         |-- denoising_unet.pth
         |-- reference_unet.pth
+    |-- dinov2_vitl14_reg4_pretrain.pth
 ```
-- move dino checkpoint 
-```mv dinov2_vitl14_reg4_pretrain.pth ./src/models```
 
 ### Dataset(optional)
 
@@ -101,7 +102,7 @@ Due to the limitations of computing resources and data, the amount of animation 
 
 - Computing resource needs: Training is available on RTX 4090 (bf16) and A100 80GB (fp32).
 
-### Train
+### Train (coming soon ...)
 Dataset Format:
 
     data/
@@ -140,18 +141,18 @@ Dataset Format:
             ├── ...
             ├── mask_n.png
 
-        ├── dir_name_1.jpg # reference instance
-        ├── dir_name_2.jpg
+        ├── 1.jpg # reference instance
+        ├── 2.jpg
         ├── ...
-        ├── dir_name_n.jpg
+        ├── n.jpg
 
-        ├── dir_name.jpg  # sketch image
+        ├── sketch.jpg  # sketch image
 
 then, 
 
     cd scripts
     
-    bash multi_ref_infer.sh # modify input_data_dir
+    bash multi_ref_infer.sh 
 
 
 ### Interface
